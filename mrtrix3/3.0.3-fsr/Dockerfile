@@ -1,15 +1,15 @@
-#FROM ubuntu:20.04
-FROM neurodebian:stretch
+FROM ubuntu:20.04
+#FROM neurodebian:stretch
 
 ARG tag
 
 ENV DEBIAN_FRONTEND noninteractive 
-RUN apt update && apt-get install -y ants
+#RUN apt update && apt-get install -y ants
 
 ## install mrtrix3 requirements
 #$RUN apt update && apt-get install -y git g++ python python-numpy libeigen3-dev zlib1g-dev libqt4-opengl-dev libgl1-mesa-dev libfftw3-dev libtiff5-dev
 
-RUN apt-get install -y git g++ python python-numpy libeigen3-dev zlib1g-dev qt5-default
+RUN apt-get update && apt-get install -y git g++ python python-numpy libeigen3-dev zlib1g-dev qt5-default
 
 ## install and compile mrtrix3
 RUN git clone https://github.com/MRtrix3/mrtrix3.git -b 3.0.3
@@ -30,7 +30,7 @@ RUN wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py && \
 
 ENV FSLDIR=/usr/local/fsl
 ENV PATH=$PATH:$FSLDIR/bin
-ENV LD_LIBRARY_PATH=$FSLDIR/lib
+#ENV LD_LIBRARY_PATH=$FSLDIR/lib
 
 RUN . $FSLDIR/etc/fslconf/fsl.sh
 
@@ -54,12 +54,13 @@ RUN which imcp
 
 
 ## install freesurfer
-RUN wget https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.3.2/freesurfer-linux-ubuntu18_x86_64-7.3.2.tar.gz 
-RUN tar xvz -C freesurfer-linux-ubuntu18_x86_64-7.3.2.tar.gz /usr/local/freesurfer
+RUN wget https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.3.2/freesurfer-linux-ubuntu20_amd64-7.3.2.tar.gz 
+
+RUN tar -xvpzf freesurfer-linux-ubuntu20_amd64-7.3.2.tar.gz -C /usr/local
 
 #install MCR
 RUN cd /usr/local/freesurfer && \
-      wget "https://surfer.nmr.mgh.harvard.edu/fswiki/MatlabRuntime?action=AttachFile&do=get&target=runtime2014bLinux.tar.gz" -o "runtime2014b.tar.gz" && \
+      wget "https://surfer.nmr.mgh.harvard.edu/fswiki/MatlabRuntime?action=AttachFile&do=get&target=runtime2014bLinux.tar.gz" -O "runtime2014b.tar.gz" && \
       tar xvf runtime2014b.tar.gz && \
       rm runtime2014b.tar.gz
 RUN chmod -R +rx /usr/local/freesurfer/MCRv84
@@ -75,12 +76,15 @@ ENV MNI_DATAPATH /usr/local/freesurfer/mni/data
 ENV MNI_DIR /usr/local/freesurfer/mni
 ENV MNI_PERL5LIB /usr/local/freesurfer/mni/share/perl5
 ENV PERL5LIB /usr/local/freesurfer/mni/share/perl5
-ENV PATH /usr/local/freesurfer/bin:/usr/local/freesurfer/fsfast/bin:/usr/local/freesurfer/tktools:/usr/local/freesurfer/mni/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:\$PATH
+ENV PATH=$PATH:/usr/local/freesurfer/bin:/usr/local/freesurfer/fsfast/bin:/usr/local/freesurfer/tktools:/usr/local/freesurfer/mni/bin:/mrtrix3/bin:/usr/local/fsl/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+RUN cd /
+
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 #install the latest cmake for ants
-RUN apt-get -y install libssl-dev
-ADD cmake-3.21.3.tar.gz /tmp 
-RUN cd /tmp/cmake-3.21.3 && ./configure && make install
+#RUN apt-get -y install libssl-dev
+#ADD cmake-3.21.3.tar.gz /tmp 
+#RUN cd /tmp/cmake-3.21.3 && ./configure && make install
 
 #reinstall ants.. apt-get install ants installs ants without a lot of stuff?
 #RUN apt-get -y install cmake
