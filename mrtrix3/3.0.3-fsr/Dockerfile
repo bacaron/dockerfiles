@@ -54,7 +54,8 @@ RUN which imcp
 
 
 ## install freesurfer
-RUN wget https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.3.2/freesurfer-linux-ubuntu18_x86_64-7.3.2.tar.gz | tar xvz -C /usr/local
+RUN wget https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.3.2/freesurfer-linux-ubuntu18_x86_64-7.3.2.tar.gz 
+RUN tar xvz -C freesurfer-linux-ubuntu18_x86_64-7.3.2.tar.gz /usr/local/freesurfer
 
 #install MCR
 RUN cd /usr/local/freesurfer && \
