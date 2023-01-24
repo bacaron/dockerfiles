@@ -47,10 +47,10 @@ ENV FSLOUTPUTTYPE=NIFTI_GZ
 RUN which imcp
 
 #install fslv5 binaries (topup - v6 version runs really slow for unknown reason)
-ADD fsl5 /usr/local/fsl5
-ENV PATH=/usr/local/fsl5:$PATH
+#ADD fsl5 /usr/local/fsl5
+#ENV PATH=/usr/local/fsl5:$PATH
 
-RUN apt install bc #used by fslorient2std
+#RUN apt update && apt -y install bc #used by fslorient2std
 
 
 ## install freesurfer
